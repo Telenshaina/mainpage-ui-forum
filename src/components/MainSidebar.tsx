@@ -1,9 +1,13 @@
-import { Home, User, TrendingUp, Bookmark, Menu } from "lucide-react";
+
+import { Home, User, TrendingUp, Bookmark, Menu, UserCog } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useUser } from "../contexts/UserContext";
+import { Button } from "./ui/button";
 
 const MainSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { userRole, setUserRole } = useUser();
 
   const menuItems = [
     { icon: Home, label: "Home", path: "/" },
@@ -11,6 +15,16 @@ const MainSidebar = () => {
     { icon: TrendingUp, label: "Popular", path: "/popular" },
     { icon: Bookmark, label: "Saved", path: "/saved" },
   ];
+
+  const toggleRole = () => {
+    if (userRole === 'student') {
+      setUserRole('professor');
+    } else if (userRole === 'professor') {
+      setUserRole('admin');
+    } else {
+      setUserRole('student');
+    }
+  };
 
   return (
     <>
@@ -48,6 +62,23 @@ const MainSidebar = () => {
             </Link>
           ))}
         </nav>
+
+        {/* User Role Toggle - for demonstration */}
+        <div className="mt-8 border-t border-gray-200 pt-6">
+          <div className="flex flex-col space-y-2">
+            <p className="text-sm text-gray-600 mb-2">
+              Currently viewing as: <span className="font-semibold">{userRole.charAt(0).toUpperCase() + userRole.slice(1)}</span>
+            </p>
+            <Button 
+              onClick={toggleRole} 
+              className="flex items-center space-x-2"
+              variant="outline"
+            >
+              <UserCog size={16} />
+              <span>Switch Role</span>
+            </Button>
+          </div>
+        </div>
       </aside>
     </>
   );
